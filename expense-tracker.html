@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense tracker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#F6F4EF;
+    --ink:#22251F;
+    --ink-soft:#6B6E63;
+    --card:#FFFFFF;
+    --line:rgba(34,37,31,0.10);
+    --moss:#5C7A52;
+    --moss-deep:#3F5A38;
+    --clay:#B9603F;
+    --clay-deep:#8C4129;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:48px 20px;
+  }
+  .wrap{width:100%;max-width:560px;}
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:30px;
+    letter-spacing:-0.01em;
+    margin:0 0 4px;
+  }
+  .sub{color:var(--ink-soft);font-size:14px;margin:0 0 28px;}
+
+  .total-card{
+    background:var(--ink);
+    color:#fff;
+    border-radius:16px;
+    padding:22px 24px;
+    margin-bottom:20px;
+  }
+  .total-label{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:6px;}
+  .total-value{font-family:'Fraunces',serif;font-size:38px;font-weight:500;}
+
+  .form-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:22px;
+  }
+  .form-row{display:flex;gap:8px;margin-bottom:10px;}
+  .form-row:last-child{margin-bottom:0;}
+  input, select{
+    height:42px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    padding:0 12px;
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:#fff;
+    outline:none;
+  }
+  input:focus, select:focus{border-color:var(--moss);}
+  #descInput{flex:2;}
+  #amountInput{flex:1;}
+  #categoryInput{flex:1;}
+  button{
+    height:42px;
+    padding:0 18px;
+    border-radius:9px;
+    border:none;
+    background:var(--moss);
+    color:#fff;
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+    width:100%;
+  }
+  button:hover{background:var(--moss-deep);}
+  button:active{transform:scale(0.99);}
+
+  .chart-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:22px;
+    display:none;
+  }
+  .chart-card.show{display:block;}
+  .chart-card h3{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:16px;
+    margin:0 0 14px;
+  }
+  .chart-wrap{position:relative;height:220px;}
+
+  .list-title{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 10px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .expense-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:13px 16px;
+    margin-bottom:8px;
+  }
+  .exp-left{display:flex;flex-direction:column;}
+  .exp-desc{font-size:14px;font-weight:500;}
+  .exp-meta{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .exp-right{display:flex;align-items:center;gap:14px;}
+  .exp-amount{font-size:15px;font-weight:500;color:var(--clay-deep);}
+  .del-btn{
+    width:30px;height:30px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink-soft);
+    font-size:15px;
+    line-height:1;
+    cursor:pointer;
+    padding:0;
+  }
+  .del-btn:hover{background:#FCEAE6;border-color:var(--clay);color:var(--clay-deep);}
+
+  .empty{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    padding:30px 0;
+  }
+
+  .cat-tag{
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:6px;
+    background:#EDEFE7;
+    color:var(--moss-deep);
+    width:fit-content;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Expense tracker</h1>
+  <p class="sub">Add what you spend, watch the total update.</p>
+
+  <div class="total-card">
+    <div class="total-label">Total spent</div>
+    <div class="total-value" id="totalValue">$0.00</div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-row">
+      <input type="text" id="descInput" placeholder="What did you spend on?" />
+      <input type="number" id="amountInput" placeholder="Amount" step="0.01" min="0" />
+    </div>
+    <div class="form-row">
+      <select id="categoryInput">
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Housing">Housing</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Health">Health</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <button id="addBtn">Add expense</button>
+    </div>
+  </div>
+
+  <div class="chart-card" id="chartCard">
+    <h3>By category</h3>
+    <div class="chart-wrap">
+      <canvas id="catChart"></canvas>
+    </div>
+  </div>
+
+  <p class="list-title">Expenses</p>
+  <div id="expenseList"></div>
+</div>
+
+<script>
+  let expenses = [];
+  let nextId = 1;
+  let chart = null;
+
+  const totalValue = document.getElementById('totalValue');
+  const expenseList = document.getElementById('expenseList');
+  const descInput = document.getElementById('descInput');
+  const amountInput = document.getElementById('amountInput');
+  const categoryInput = document.getElementById('categoryInput');
+  const addBtn = document.getElementById('addBtn');
+  const chartCard = document.getElementById('chartCard');
+
+  const catColors = {
+    Food:'#B9603F', Transport:'#4F7CA8', Housing:'#8C6A3F',
+    Shopping:'#9A5C8C', Entertainment:'#5C7A52', Health:'#3F8C7A', Other:'#6B6E63'
+  };
+
+  function formatMoney(n){
+    return '$' + n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function addExpense(){
+    const desc = descInput.value.trim();
+    const amount = parseFloat(amountInput.value);
+    const category = categoryInput.value;
+
+    if(!desc){ descInput.focus(); return; }
+    if(!amount || amount <= 0){ amountInput.focus(); return; }
+
+    expenses.push({
+      id: nextId++,
+      desc, amount, category,
+      date: new Date().toLocaleDateString(undefined, {month:'short', day:'numeric'})
+    });
+
+    descInput.value = '';
+    amountInput.value = '';
+    render();
+  }
+
+  function deleteExpense(id){
+    expenses = expenses.filter(e => e.id !== id);
+    render();
+  }
+
+  function render(){
+    const total = expenses.reduce((sum, e) => sum + e.amount, 0);
+    totalValue.textContent = formatMoney(total);
+
+    if(expenses.length === 0){
+      expenseList.innerHTML = '<div class="empty">No expenses yet. Add your first one above.</div>';
+    } else {
+      expenseList.innerHTML = expenses.slice().reverse().map(e => `
+        <div class="expense-row">
+          <div class="exp-left">
+            <span class="exp-desc">${escapeHtml(e.desc)}</span>
+            <div class="exp-meta">
+              <span class="cat-tag">${e.category}</span> &nbsp;${e.date}
+            </div>
+          </div>
+          <div class="exp-right">
+            <span class="exp-amount">${formatMoney(e.amount)}</span>
+            <button class="del-btn" data-id="${e.id}" aria-label="Delete expense">&times;</button>
+          </div>
+        </div>
+      `).join('');
+
+      expenseList.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteExpense(parseInt(btn.dataset.id)));
+      });
+    }
+
+    renderChart();
+  }
+
+  function renderChart(){
+    if(expenses.length === 0){
+      chartCard.classList.remove('show');
+      return;
+    }
+    chartCard.classList.add('show');
+
+    const byCategory = {};
+    expenses.forEach(e => {
+      byCategory[e.category] = (byCategory[e.category] || 0) + e.amount;
+    });
+
+    const labels = Object.keys(byCategory);
+    const data = Object.values(byCategory);
+    const colors = labels.map(l => catColors[l] || '#6B6E63');
+
+    if(chart){
+      chart.data.labels = labels;
+      chart.data.datasets[0].data = data;
+      chart.data.datasets[0].backgroundColor = colors;
+      chart.update();
+    } else {
+      const ctx = document.getElementById('catChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 12 } } }
+          }
+        }
+      });
+    }
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  addBtn.addEventListener('click', addExpense);
+  amountInput.addEventListener('keydown', e => { if(e.key === 'Enter') addExpense(); });
+  descInput.addEventListener('keydown', e => { if(e.key === 'Enter') amountInput.focus(); });
+
+  render();
+</script>
+</body>
+</html>
