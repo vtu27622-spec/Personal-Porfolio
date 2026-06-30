@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bharath Kaarthick R — AI & ML Student</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0F14;
+    --surface: #11161D;
+    --surface-2: #161D26;
+    --line: #232B35;
+    --text: #E6EAEF;
+    --text-dim: #8893A0;
+    --copper: #E8A24C;
+    --teal: #5FB3A3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--copper);color:#0B0F14;}
+  a{color:inherit;text-decoration:none;}
+
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-0.01em;}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,15,20,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;}
+  .logo{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--copper);}
+  .navlinks{display:flex;gap:32px;font-size:14px;color:var(--text-dim);}
+  .navlinks a{transition:color .2s;}
+  .navlinks a:hover{color:var(--text);}
+  .navlinks a:focus-visible, a:focus-visible{outline:2px solid var(--copper);outline-offset:3px;}
+  .navcta{
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    border:1px solid var(--copper);color:var(--copper);
+    padding:8px 16px;border-radius:3px;transition:.2s;
+  }
+  .navcta:hover{background:var(--copper);color:#0B0F14;}
+
+  /* HERO */
+  .hero{padding:100px 0 80px;position:relative;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--teal);
+    margin-bottom:20px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);}
+  .hero h1{
+    font-size:clamp(40px,6vw,68px);
+    line-height:1.05;
+    max-width:780px;
+  }
+  .hero h1 em{font-style:italic;color:var(--copper);}
+  .hero p.lede{
+    margin-top:24px;max-width:560px;color:var(--text-dim);font-size:18px;
+  }
+  .hero-actions{display:flex;gap:16px;margin-top:36px;flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--copper);color:#0B0F14;font-weight:600;font-size:15px;
+    padding:13px 26px;border-radius:4px;transition:.2s;display:inline-block;
+  }
+  .btn-primary:hover{background:#f5b366;transform:translateY(-1px);}
+  .btn-secondary{
+    border:1px solid var(--line);color:var(--text);font-size:15px;
+    padding:13px 26px;border-radius:4px;transition:.2s;display:inline-block;
+  }
+  .btn-secondary:hover{border-color:var(--text-dim);}
+
+  /* TERMINAL signature */
+  .terminal{
+    margin-top:64px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:8px;
+    max-width:600px;
+    overflow:hidden;
+    box-shadow:0 20px 60px -20px rgba(0,0,0,0.6);
+  }
+  .terminal-bar{
+    display:flex;align-items:center;gap:7px;
+    padding:11px 14px;border-bottom:1px solid var(--line);
+    background:var(--surface-2);
+  }
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .dot.r{background:#e8746a;} .dot.y{background:#e8c14c;} .dot.g{background:#5fbf6a;}
+  .terminal-title{
+    margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);
+  }
+  .terminal-body{
+    padding:22px 20px;font-family:'JetBrains Mono',monospace;font-size:14px;
+    min-height:140px;
+  }
+  .terminal-body .prompt{color:var(--teal);}
+  .terminal-body .cmd{color:var(--text);}
+  #typed-output{color:var(--text-dim);white-space:pre-wrap;}
+  .cursor{display:inline-block;width:8px;height:16px;background:var(--copper);vertical-align:text-bottom;animation:blink 1s step-start infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* SECTIONS */
+  section{padding:90px 0;border-top:1px solid var(--line);}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:12px;}
+  .section-head h2{font-size:clamp(28px,4vw,38px);}
+  .section-num{font-family:'JetBrains Mono',monospace;color:var(--text-dim);font-size:13px;}
+
+  /* PROJECTS */
+  .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:28px;transition:.25s;position:relative;overflow:hidden;
+  }
+  .card:hover{border-color:var(--copper);transform:translateY(-3px);}
+  .card .tag{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);
+    text-transform:uppercase;letter-spacing:.06em;
+  }
+  .card h3{font-size:22px;margin:12px 0 10px;}
+  .card p{color:var(--text-dim);font-size:14.5px;margin-bottom:16px;}
+  .stack{display:flex;gap:8px;flex-wrap:wrap;}
+  .stack span{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-dim);
+    border:1px solid var(--line);padding:4px 9px;border-radius:20px;
+  }
+
+  /* ABOUT/SKILLS */
+  .about-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:start;}
+  .about-grid p{color:var(--text-dim);font-size:16px;margin-bottom:18px;max-width:520px;}
+  .skill-list{display:flex;flex-direction:column;gap:0;}
+  .skill-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;
+  }
+  .skill-row:first-child{border-top:1px solid var(--line);}
+  .skill-row span:first-child{font-family:'JetBrains Mono',monospace;color:var(--text);}
+  .skill-row span:last-child{color:var(--text-dim);font-size:13px;}
+
+  /* CONTACT */
+  .contact{text-align:left;}
+  .contact h2{font-size:clamp(32px,5vw,52px);max-width:600px;}
+  .contact p.lede{color:var(--text-dim);margin-top:16px;max-width:480px;font-size:17px;}
+  .contact-links{display:flex;gap:18px;margin-top:36px;flex-wrap:wrap;}
+  .contact-links a{
+    font-family:'JetBrains Mono',monospace;font-size:14px;
+    border:1px solid var(--line);padding:11px 20px;border-radius:4px;transition:.2s;
+  }
+  .contact-links a:hover{border-color:var(--copper);color:var(--copper);}
+
+  footer{border-top:1px solid var(--line);padding:28px 0;color:var(--text-dim);font-size:13px;display:flex;justify-content:space-between;}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+
+  @media (max-width:760px){
+    .navlinks{display:none;}
+    .about-grid{grid-template-columns:1fr;gap:36px;}
+    .projects{grid-template-columns:1fr;}
+    .hero{padding:64px 0 56px;}
+    footer{flex-direction:column;gap:8px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#" class="logo">bharath.dev</a>
+    <div class="navlinks">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="navcta">Say hello</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">OPEN TO INTERNSHIPS & COLLABORATIONS</div>
+    <h1>I turn sensors and<br>cameras into <em>systems</em><br>that understand people.</h1>
+    <p class="lede">Bharath Kaarthick R — AI & Machine Learning student building real-world computer vision and IoT systems, from gesture recognition to contactless automation.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn-primary">See my work</a>
+      <a href="#contact" class="btn-secondary">Get in touch</a>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <div class="terminal-title">bharath@portfolio — zsh</div>
+      </div>
+      <div class="terminal-body">
+        <div><span class="prompt">$</span> <span class="cmd">whoami --verbose</span></div>
+        <div id="typed-output"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="work">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Selected work</h2>
+      <span class="section-num">04 projects</span>
+    </div>
+    <div class="projects">
+      <div class="card reveal">
+        <div class="tag">Computer vision</div>
+        <h3>Hand Gesture Recognition</h3>
+        <p>Real-time webcam system detecting 5–10 hand landmarks to classify gestures for contactless human-computer interaction.</p>
+        <div class="stack"><span>Python</span><span>OpenCV</span><span>MediaPipe</span></div>
+      </div>
+      <div class="card reveal">
+        <div class="tag">IoT</div>
+        <h3>ESP32 Contactless Door</h3>
+        <p>An automatic door system built on ESP32 and a PIR sensor, tuned for quick response and reliable triggering.</p>
+        <div class="stack"><span>ESP32</span><span>PIR Sensor</span><span>Embedded C</span></div>
+      </div>
+      <div class="card reveal">
+        <div class="tag">Security</div>
+        <h3>Quantum Cryptography ID System</h3>
+        <p>A digital identity verification framework using quantum cryptography concepts and secure key distribution to cut unauthorized access.</p>
+        <div class="stack"><span>Cryptography</span><span>Security</span></div>
+      </div>
+      <div class="card reveal">
+        <div class="tag">Computer vision</div>
+        <h3>Convex Hull Shape Analysis</h3>
+        <p>Detects object boundaries and convexity defects for finger counting and hand shape classification.</p>
+        <div class="stack"><span>Python</span><span>OpenCV</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="section-head" style="margin-bottom:24px;">
+          <h2>About</h2>
+        </div>
+        <p>I'm a second-year AI & Machine Learning student at Vel Tech University, building hands-on projects across computer vision, embedded systems, and intelligent automation.</p>
+        <p>I like working at the intersection of hardware and software — wiring up an ESP32 and PIR sensor one week, training a gesture-recognition model the next. I learn fastest by building something and breaking it.</p>
+        <p>I've also run a sales dashboard in Power BI and built a RAG-based chatbot, so I'm just as comfortable with data and language models as I am with sensors and cameras.</p>
+      </div>
+      <div class="reveal">
+        <div class="skill-list">
+          <div class="skill-row"><span>Python / Java</span><span>Primary</span></div>
+          <div class="skill-row"><span>Computer vision</span><span>Core focus</span></div>
+          <div class="skill-row"><span>OpenCV / MediaPipe</span><span>Daily use</span></div>
+          <div class="skill-row"><span>ESP32 / Embedded systems</span><span>Hardware</span></div>
+          <div class="skill-row"><span>Java Full Stack</span><span>Currently learning</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="reveal">
+      <h2>Let's talk about<br>your next build.</h2>
+      <p class="lede">Open to internships, research collaborations, and projects in AI, computer vision, or IoT.</p>
+      <div class="contact-links">
+        <a href="mailto:bharthkaarthick4256@gmail.com">bharthkaarthick4256@gmail.com</a>
+        <a href="tel:+919840195032">+91 98401 95032</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;width:100%;">
+    <span>© 2026 Bharath Kaarthick R</span>
+    <span>Vel Tech University · Chennai</span>
+  </div>
+</footer>
+
+<script>
+  // Typewriter effect for terminal
+  const lines = [
+    "name: Bharath Kaarthick R",
+    "role: AI & ML Student, Vel Tech University",
+    "focus: computer vision, IoT, embedded systems",
+    "status: open to internships"
+  ];
+  const el = document.getElementById('typed-output');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reduceMotion) {
+    el.textContent = lines.join('\n');
+  } else {
+    let lineIndex = 0, charIndex = 0, out = "";
+    function type(){
+      if(lineIndex >= lines.length){
+        el.innerHTML = out + '<span class="cursor"></span>';
+        return;
+      }
+      const line = lines[lineIndex];
+      if(charIndex <= line.length){
+        el.innerHTML = out + line.slice(0,charIndex) + '<span class="cursor"></span>';
+        charIndex++;
+        setTimeout(type, 28);
+      } else {
+        out += line + "\n";
+        lineIndex++; charIndex = 0;
+        setTimeout(type, 200);
+      }
+    }
+    setTimeout(type, 500);
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); observer.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>

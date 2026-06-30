@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up Form</title>
+<style>
+  :root{
+    --bg:#0f172a; --surface:#1a2540; --line:#2c3a5e;
+    --text:#e7ecf5; --dim:#92a1bd; --accent:#5b8cff; --error:#ff6b6b; --ok:#4ade80;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,sans-serif;
+    padding:24px;
+  }
+  form{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:36px; width:100%; max-width:420px;
+  }
+  h1{font-size:22px; margin:0 0 24px;}
+  .field{margin-bottom:18px;}
+  label{display:block; font-size:14px; margin-bottom:6px; color:var(--dim);}
+  input{
+    width:100%; padding:11px 12px; border-radius:6px; border:1px solid var(--line);
+    background:#0f172a; color:var(--text); font-size:15px; outline:none;
+    transition:border-color .15s;
+  }
+  input:focus{border-color:var(--accent);}
+  input.invalid{border-color:var(--error);}
+  input.valid{border-color:var(--ok);}
+  .error-msg{
+    color:var(--error); font-size:13px; margin-top:5px; min-height:16px; display:none;
+  }
+  .error-msg.show{display:block;}
+  button{
+    width:100%; padding:12px; margin-top:8px; border:none; border-radius:6px;
+    background:var(--accent); color:white; font-size:15px; font-weight:600;
+    cursor:pointer; transition:opacity .15s;
+  }
+  button:hover{opacity:.9;}
+  .success{
+    display:none; background:rgba(74,222,128,0.1); border:1px solid var(--ok);
+    color:var(--ok); padding:12px; border-radius:6px; font-size:14px; margin-bottom:18px;
+  }
+  .success.show{display:block;}
+</style>
+</head>
+<body>
+
+<form id="signupForm" novalidate>
+  <h1>Create your account</h1>
+
+  <div class="success" id="successMsg">Form submitted successfully.</div>
+
+  <div class="field">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" autocomplete="name">
+    <div class="error-msg" id="nameError"></div>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" autocomplete="email">
+    <div class="error-msg" id="emailError"></div>
+  </div>
+
+  <div class="field">
+    <label for="phone">Phone</label>
+    <input type="text" id="phone" name="phone" autocomplete="tel" placeholder="e.g. 9876543210">
+    <div class="error-msg" id="phoneError"></div>
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" autocomplete="new-password">
+    <div class="error-msg" id="passwordError"></div>
+  </div>
+
+  <button type="submit">Sign up</button>
+</form>
+
+<script>
+  const form = document.getElementById('signupForm');
+  const successMsg = document.getElementById('successMsg');
+
+  const fields = {
+    name: {
+      input: document.getElementById('name'),
+      error: document.getElementById('nameError'),
+      validate: (v) => {
+        if (!v.trim()) return 'Name is required.';
+        if (v.trim().length < 2) return 'Name must be at least 2 characters.';
+        return '';
+      }
+    },
+    email: {
+      input: document.getElementById('email'),
+      error: document.getElementById('emailError'),
+      validate: (v) => {
+        if (!v.trim()) return 'Email is required.';
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!re.test(v.trim())) return 'Enter a valid email address.';
+        return '';
+      }
+    },
+    phone: {
+      input: document.getElementById('phone'),
+      error: document.getElementById('phoneError'),
+      validate: (v) => {
+        const digits = v.replace(/\D/g, '');
+        if (!v.trim()) return 'Phone number is required.';
+        if (digits.length !== 10) return 'Enter a valid 10-digit phone number.';
+        return '';
+      }
+    },
+    password: {
+      input: document.getElementById('password'),
+      error: document.getElementById('passwordError'),
+      validate: (v) => {
+        if (!v) return 'Password is required.';
+        if (v.length < 8) return 'Password must be at least 8 characters.';
+        if (!/[A-Z]/.test(v)) return 'Password must include an uppercase letter.';
+        if (!/[0-9]/.test(v)) return 'Password must include a number.';
+        return '';
+      }
+    }
+  };
+
+  function validateField(key) {
+    const field = fields[key];
+    const message = field.validate(field.input.value);
+    field.error.textContent = message;
+    field.error.classList.toggle('show', !!message);
+    field.input.classList.toggle('invalid', !!message);
+    field.input.classList.toggle('valid', !message && field.input.value.trim() !== '');
+    return !message;
+  }
+
+  Object.keys(fields).forEach((key) => {
+    fields[key].input.addEventListener('blur', () => validateField(key));
+    fields[key].input.addEventListener('input', () => {
+      if (fields[key].input.classList.contains('invalid')) validateField(key);
+    });
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    successMsg.classList.remove('show');
+
+    let allValid = true;
+    Object.keys(fields).forEach((key) => {
+      if (!validateField(key)) allValid = false;
+    });
+
+    if (allValid) {
+      successMsg.classList.add('show');
+      form.reset();
+      Object.keys(fields).forEach((key) => {
+        fields[key].input.classList.remove('valid', 'invalid');
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
